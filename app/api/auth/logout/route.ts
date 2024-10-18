@@ -6,19 +6,36 @@ export async function POST() {
   try {
     const session = await verifySession();
 
-    if (session?.userId) {
+    const SessionUserId = session?.userId;
+
+    if (SessionUserId) {
       const db = await connectToDatabase();
 
       if (!db) {
         throw new Error("No se pudo conectar a la base de datos");
       }
 
-      await db.request().input("userId", session.userId).query(`
+      await db.request().input("UsuarioSesionUsuarioId", SessionUserId).query(`
           UPDATE ${process.env.SESSION_TABLE}
-          SET UsuarioSesionGUID = NULL,
-              expiresAt = NULL
-          WHERE userId = @userId
+          SET UsuarioSesionGUID = NULL WHERE UsuarioSesionUsuarioId = @UsuarioSesionUsuarioId
         `);
+
+      const LastActivityAt = new Date();
+
+      const SesionGUID = null;
+      const ExpiresAt = null;
+      const IsActive = 0;
+
+      await db
+        .request()
+        .input("UsuarioId", SessionUserId)
+        .input("UsuarioSesionId", session.userId)
+        .input("LastActivityAt", LastActivityAt)
+        .input("SesionGUID", SesionGUID)
+        .input("ExpiresAt", ExpiresAt)
+        .input("IsActive", IsActive)
+        .query(`UPDATE ${process.env.SESION_INFO_TABLE}
+        SET SesionGUID = @SesionGUID, ExpiresAt = @ExpiresAt, IsActive = @IsActive, LastActivityAt = @LastActivityAt WHERE UsuarioId = @UsuarioId`);
     }
 
     const response = NextResponse.json({

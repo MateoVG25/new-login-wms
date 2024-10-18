@@ -1,6 +1,14 @@
 import { LoginFormSchema } from "@/types/login-schema";
 
-export async function login(prevState: any, formData: FormData) {
+interface LoginState {
+  errors?: {
+    [key: string]: string[] | undefined;
+  };
+  message?: string;
+  success?: boolean;
+}
+
+export async function login(prevState: LoginState, formData: FormData) {
   const loginData = {
     email: formData.get("email"),
     password: formData.get("password"),
@@ -11,7 +19,7 @@ export async function login(prevState: any, formData: FormData) {
   if (!validationResult.success) {
     return {
       errors: validationResult.error.flatten().fieldErrors,
-      message: "Por favor, corrija los errores en el formulario",
+      message: "Por favor, revise los campos del formulario.",
     };
   }
 

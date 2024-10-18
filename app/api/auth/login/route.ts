@@ -32,7 +32,7 @@ export async function POST(request: Request) {
     }
 
     const userResult = await db.request().input("email", email).query(`
-      SELECT UsuarioId, password FROM ${process.env.USER_TABLE} WHERE UsuarioUser = @email
+      SELECT UsuarioId, password, UsuarioGUID FROM ${process.env.USER_TABLE} WHERE UsuarioUser = @email
     `);
 
     if (userResult.recordset.length === 0) {
@@ -43,6 +43,7 @@ export async function POST(request: Request) {
     }
 
     const user = userResult.recordset[0];
+
     const validPassword = await compare(password, user.password);
 
     if (!validPassword) {
@@ -52,41 +53,68 @@ export async function POST(request: Request) {
       );
     }
 
-    const sessionGuid = uuidv4();
-    const expiresAt = new Date(Date.now() + cookieConfig.options.maxAge * 1000);
+    const UsuarioSesionGUID = uuidv4();
+    const UserId = user.UsuarioId;
 
-    // Actualizar o crear sesión
     const sessionResult = await db
       .request()
-      .input("userId", user.UsuarioId)
-      .input("guid", sessionGuid)
-      .input("expiresAt", expiresAt).query(`
+      .input("UsuarioSesionUsuarioId", UserId)
+      .input("UsuarioSesionGUID", UsuarioSesionGUID).query(`
         MERGE ${process.env.SESSION_TABLE} AS target
-        USING (SELECT @userId as userId) AS source
-        ON target.userId = source.userId
+        USING (SELECT @UsuarioSesionUsuarioId as UsuarioSesionUsuarioId) AS source
+        ON target.UsuarioSesionUsuarioId = source.UsuarioSesionUsuarioId
         WHEN MATCHED THEN
-          UPDATE SET UsuarioSesionGUID = @guid, expiresAt = @expiresAt
+          UPDATE SET UsuarioSesionGUID = @UsuarioSesionGUID
         WHEN NOT MATCHED THEN
-          INSERT (userId, UsuarioSesionGUID, expiresAt)
-          VALUES (@userId, @guid, @expiresAt)
-        OUTPUT INSERTED.id, INSERTED.UsuarioSesionGUID;
+          INSERT (UsuarioSesionUsuarioId, UsuarioSesionGUID)
+          VALUES (@UsuarioSesionUsuarioId, @UsuarioSesionGUID)
+        OUTPUT INSERTED.UsuarioSesionId, INSERTED.UsuarioSesionGUID;
       `);
 
     if (sessionResult.recordset.length === 0) {
       return NextResponse.json(
-        { error: "Error al gestionar la sesión" },
+        { error: "Error al crear o actualizar la sesión" },
         { status: 500 }
       );
     }
 
-    const { id, UsuarioSesionGUID: sessionGuidUpdated } =
+    const { UsuarioSesionId, UsuarioSesionGUID: sessionGuidUpdated } =
       sessionResult.recordset[0];
 
-    // Crear JWT
+    const ExpiresAt = new Date(Date.now() + cookieConfig.options.maxAge * 1000);
+    const CreatedAt = new Date();
+    const IsActive = 1;
+    const LastActivityAt = new Date();
+
+    await db
+      .request()
+      .input("UsuarioSesionId", UsuarioSesionId)
+      .input("SesionGUID", sessionGuidUpdated)
+      .input("UsuarioId", UserId)
+      .input("UsuarioGUID", user.UsuarioGUID)
+      .input("CreatedAt", CreatedAt)
+      .input("ExpiresAt", ExpiresAt)
+      .input("IsActive", IsActive)
+      .input("LastActivityAt", LastActivityAt).query(`
+        MERGE ${process.env.SESION_INFO_TABLE} AS target
+        USING (SELECT @UsuarioSesionId as UsuarioSesionId) AS source
+        ON target.UsuarioSesionId = source.UsuarioSesionId
+        WHEN MATCHED THEN
+          UPDATE SET 
+            SesionGUID = @SesionGUID,
+            CreatedAt = @CreatedAt,
+            ExpiresAt = @ExpiresAt,
+            IsActive = @IsActive,
+            LastActivityAt = @LastActivityAt
+        WHEN NOT MATCHED THEN
+          INSERT (UsuarioSesionId, SesionGUID, UsuarioId, UsuarioGUID, CreatedAt, ExpiresAt, IsActive, LastActivityAt)
+          VALUES (@UsuarioSesionId, @SesionGUID, @UsuarioId, @UsuarioGUID, @CreatedAt, @ExpiresAt, @IsActive, @LastActivityAt);
+      `);
+
     const key = new TextEncoder().encode(process.env.JWT_SECRET);
     const token = await new SignJWT({
       userId: user.UsuarioId,
-      sessionId: id,
+      sessionId: UsuarioSesionId,
       sessionGuid: sessionGuidUpdated,
     })
       .setProtectedHeader({ alg: "HS256", typ: "JWT" })
@@ -97,10 +125,9 @@ export async function POST(request: Request) {
     // Crear respuesta
     const response = NextResponse.json({
       success: true,
-      redirect: "/home", // Añadimos la URL de redirección en la respuesta
+      redirect: "/home",
     });
 
-    // Establecer cookie
     response.cookies.set(cookieConfig.name, token, cookieConfig.options);
 
     return response;

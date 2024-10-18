@@ -1,5 +1,13 @@
 import { RegisterFormSchema } from "@/types/register-schema";
-export async function signup(prevState: any, formData: FormData) {
+
+interface SignUpState {
+  errors?: {
+    [key: string]: string[] | undefined;
+  };
+  message?: string;
+}
+
+export async function signup(prevState: SignUpState, formData: FormData) {
   const signupData = {
     name: formData.get("name"),
     lastname: formData.get("lastname"),

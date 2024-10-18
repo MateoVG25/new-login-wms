@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { connectToDatabase } from "@/db/connection";
+import { verifySession } from "../session-verification";
 import dotenv from "dotenv";
-import { verifySession } from "../../session-verification";
 
 dotenv.config();
 
@@ -31,11 +31,18 @@ export async function GET() {
 
     const SessionUserId = session.userId;
 
+    console.log("SessionUserId", SessionUserId);
+
     const result = await db
       .request()
       .input("UsuarioId", SessionUserId)
       .query(
-        `SELECT * FROM ${process.env.USER_TABLE} WHERE UsuarioId = @UsuarioId`
+        `SELECT M.MenuTitle,LP.ListProgramName, ULP.UsuarioId
+        FROM TC_Laura_Pruebas..UsuarioListProgram AS ULP
+        INNER JOIN	TC_Laura_Pruebas..ListProgram AS LP ON ULP.ListProgramId = LP.ListProgramId
+        INNER JOIN TC_Laura_Pruebas..Menu AS M ON LP.MenuId=M.MenuId
+        WHERE ULP.UsuarioId=32
+        ORDER BY 1`
       );
 
     if (result.recordset.length === 0) {
@@ -47,16 +54,16 @@ export async function GET() {
       );
     }
 
-    return NextResponse.json(result.recordset[0]);
+    return NextResponse.json({
+      data: result.recordset,
+    });
   } catch (error) {
-    console.error("Error obteniendo perfil de usuario:", error);
+    console.error("Error obteniendo los modulos del usuario: ", error);
     return NextResponse.json(
       {
-        error: "Error obteniendo perfil de usuario",
+        error: "Error obteniendo los modulos del usuario",
       },
-      {
-        status: 500,
-      }
+      { status: 500 }
     );
   }
 }

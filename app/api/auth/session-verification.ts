@@ -16,9 +16,7 @@ interface SessionInfo {
 
 export async function verifySession(): Promise<SessionInfo | null> {
   try {
-    // 1. Obtener la cookie de sesión
-    const cookieStore = cookies();
-    const sessionCookie = cookieStore.get("session");
+    const sessionCookie = cookies().get("session");
 
     if (!sessionCookie?.value) {
       return null;
@@ -42,18 +40,16 @@ export async function verifySession(): Promise<SessionInfo | null> {
 
     const result = await db
       .request()
-      .input("userId", payload.userId)
+      .input("UsuarioSesionUsuarioId", payload.userId)
       .input("sessionId", payload.sessionId)
       .input("sessionGuid", payload.sessionGuid).query(`
-        SELECT id, userId, UsuarioSesionGUID, expiresAt
+        SELECT UsuarioSesionId, UsuarioSesionUsuarioId, UsuarioSesionGUID
         FROM ${process.env.SESSION_TABLE}
-        WHERE userId = @userId 
-        AND id = @sessionId 
-        AND UsuarioSesionGUID = @sessionGuid
-        AND expiresAt > GETDATE()
+        WHERE UsuarioSesionUsuarioId = @UsuarioSesionUsuarioId 
+        AND UsuarioSesionId = @sessionId 
+        AND UsuarioSesionGUID = @sessionGuid;
       `);
 
-    // 5. Verificar si la sesión existe y es válida
     if (result.recordset.length === 0) {
       return {
         userId: payload.userId,
@@ -61,8 +57,6 @@ export async function verifySession(): Promise<SessionInfo | null> {
         isValid: false,
       };
     }
-
-    // 6. Devolver la información de la sesión validada
     return {
       userId: payload.userId,
       sessionId: payload.sessionId,
@@ -104,38 +98,38 @@ export async function verifySession(): Promise<SessionInfo | null> {
 // }
 
 // Helper para obtener el userId de una solicitud autenticada
-// export function getAuthenticatedUserId(request: Request): number | null {
-//   const userId = request.headers.get("x-user-id");
-//   return userId ? parseInt(userId, 10) : null;
-// }
+export function getAuthenticatedUserId(request: Request): number | null {
+  const userId = request.headers.get("x-user-id");
+  return userId ? parseInt(userId, 10) : null;
+}
 
-// export async function getSessionUser() {
-//   try {
-//     const session = await verifySession();
+export async function getSessionUser() {
+  try {
+    const session = await verifySession();
 
-//     if (!session?.isValid) {
-//       return null;
-//     }
+    if (!session?.isValid) {
+      return null;
+    }
 
-//     const db = await connectToDatabase();
-//     if (!db) {
-//       throw new Error("No se pudo conectar a la base de datos");
-//     }
+    const db = await connectToDatabase();
+    if (!db) {
+      throw new Error("No se pudo conectar a la base de datos");
+    }
 
-//     // Obtener información del usuario
-//     const result = await db.request().input("userId", session.userId).query(`
-//         SELECT UsuarioId, UsuarioNombre, UsuarioUser
-//         FROM ${process.env.USER_TABLE}
-//         WHERE UsuarioId = @userId
-//       `);
+    // Obtener información del usuario
+    const result = await db.request().input("userId", session.userId).query(`
+        SELECT UsuarioId, UsuarioNombre, UsuarioUser
+        FROM ${process.env.USER_TABLE}
+        WHERE UsuarioId = @userId
+      `);
 
-//     if (result.recordset.length === 0) {
-//       return null;
-//     }
+    if (result.recordset.length === 0) {
+      return null;
+    }
 
-//     return result.recordset[0];
-//   } catch (error) {
-//     console.error("Error obteniendo sesion de usuario:", error);
-//     return null;
-//   }
-// }
+    return result.recordset[0];
+  } catch (error) {
+    console.error("Error obteniendo sesion de usuario:", error);
+    return null;
+  }
+}

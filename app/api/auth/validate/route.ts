@@ -31,9 +31,8 @@ export async function POST(request: Request) {
       .input("guid", payload.sessionGuid).query(`
         SELECT TOP 1 1 
         FROM ${process.env.SESSION_TABLE} 
-        WHERE id = @sessionId 
-        AND UsuarioSesionGUID = @guid 
-        AND expiresAt > GETDATE()
+        WHERE UsuarioSesionId = @sessionId 
+        AND UsuarioSesionGUID = @guid;
       `);
 
     return NextResponse.json({

@@ -5,10 +5,10 @@ export const LoginFormSchema = z.object({
     .string()
     .email({ message: "Por favor ingrese un correo electrónico válido." })
     .min(6, {
-      message: " El campo de correo debe tener al menos 6 caracteres.",
+      message: " El campo email debe tener al menos 6 caracteres.",
     })
     .max(100, {
-      message: "El campo de correo no debe tener más de 100 caracteres.",
+      message: "El campo email no debe tener más de 100 caracteres.",
     })
     .trim(),
   password: z
@@ -28,7 +28,7 @@ export const LoginFormSchema = z.object({
 });
 
 export const initialState = {
-  errors: {} as { [key: string]: string[] },
+  errors: {},
   message: "",
   success: false,
 };

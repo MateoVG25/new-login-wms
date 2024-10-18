@@ -50,7 +50,7 @@ export function IconUser(props: React.SVGProps<SVGSVGElement>) {
   );
 }
 
-export function UserIdentityIcon(props: React.SVGProps<SVGSVGElement>) {
+export function UserIdentityIcon() {
   return (
     <svg
       fill="#000000"
