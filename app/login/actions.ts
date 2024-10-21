@@ -10,8 +10,8 @@ interface LoginState {
 
 export async function login(prevState: LoginState, formData: FormData) {
   const loginData = {
-    email: formData.get("email"),
-    password: formData.get("password"),
+    email: formData.get("email") as string,
+    password: formData.get("password") as string,
   };
 
   const validationResult = LoginFormSchema.safeParse(loginData);
@@ -29,12 +29,11 @@ export async function login(prevState: LoginState, formData: FormData) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(loginData),
+      body: JSON.stringify(validationResult.data),
     });
 
-    const data = await response.json();
-
     if (!response.ok) {
+      const data = await response.json();
       return {
         errors: data.errors || {},
         message: data.error || "Error al iniciar sesión",
@@ -45,7 +44,8 @@ export async function login(prevState: LoginState, formData: FormData) {
       success: true,
       message: "Login exitoso",
     };
-  } catch {
+  } catch (error) {
+    console.error("Error durante el inicio de sesión:", error);
     return {
       message: "Error al conectar con el servidor",
     };

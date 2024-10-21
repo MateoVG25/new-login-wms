@@ -122,7 +122,6 @@ export async function POST(request: Request) {
       .setExpirationTime(`${cookieConfig.options.maxAge}s`)
       .sign(key);
 
-    // Crear respuesta
     const response = NextResponse.json({
       success: true,
       redirect: "/home",

@@ -5,24 +5,11 @@ interface SignUpState {
     [key: string]: string[] | undefined;
   };
   message?: string;
+  success?: boolean;
 }
 
 export async function signup(prevState: SignUpState, formData: FormData) {
-  const signupData = {
-    name: formData.get("name"),
-    lastname: formData.get("lastname"),
-    email: formData.get("email"),
-    password: formData.get("password"),
-    phone: formData.get("phone"),
-    day: formData.get("day"),
-    month: formData.get("month"),
-    year: formData.get("year"),
-    gender: formData.get("gender"),
-    userIdentityType: formData.get("userIdentityType"),
-    userIdentity: formData.get("userIdentity"),
-    operationCenter: formData.get("operationCenter"),
-    operationPoint: formData.get("operationPoint"),
-  };
+  const signupData = Object.fromEntries(formData.entries());
 
   const validation = RegisterFormSchema.safeParse(signupData);
 
@@ -39,23 +26,23 @@ export async function signup(prevState: SignUpState, formData: FormData) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(signupData),
+      body: JSON.stringify(validation.data),
     });
 
-    const data = await response.json();
-
     if (!response.ok) {
+      const data = await response.json();
       return {
         errors: data.errors || {},
         message: data.error || "Error al registrar usuario",
       };
     }
 
-    window.location.href = "/login";
-    return { message: "Registro exitoso" };
-  } catch {
+    return { message: "Registro exitoso", success: true };
+  } catch (error) {
+    console.error("Error durante el registro", error);
     return {
       message: "Error al conectar con el servidor",
+      success: false,
     };
   }
 }

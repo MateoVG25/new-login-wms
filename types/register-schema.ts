@@ -21,18 +21,22 @@ export const RegisterFormSchema = z.object({
     .trim(),
   password: z
     .string()
-    .min(8, { message: "Tener al menos 8 caracteres" })
-    .max(32, { message: "Tener como maximo 32 caracteres" })
-    .regex(/[a-zA-Z]/, {
-      message: "Tener al menos una letra",
+    .min(1, { message: "La contraseña es requerida." })
+    .refine((password) => password.length >= 8, {
+      message: "La contraseña debe tener al menos 8 caracteres.",
     })
-    .regex(/[0-9]/, {
-      message: "Tener al menos un número",
+    .refine((password) => password.length <= 32, {
+      message: "La contraseña no debe tener más de 32 caracteres.",
     })
-    .regex(/[^a-zA-Z0-9]/, {
-      message: "Tener al menos un carácter especial",
+    .refine((password) => /[a-zA-Z]/.test(password), {
+      message: "La contraseña debe tener al menos una letra.",
     })
-    .trim(),
+    .refine((password) => /[0-9]/.test(password), {
+      message: "La contraseña debe tener al menos un número.",
+    })
+    .refine((password) => /[^a-zA-Z0-9]/.test(password), {
+      message: "La contraseña debe tener al menos un carácter especial.",
+    }),
   phone: z
     .string()
     .min(10, {

@@ -17,7 +17,7 @@ interface ApiResponse {
   data: OperationCenter[];
 }
 
-export default function SelectOperationCenter() {
+export const SelectOperationCenter = () => {
   const [operationCenter, setOperationCenter] = useState<OperationCenter[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -86,4 +86,4 @@ export default function SelectOperationCenter() {
       ))}
     </Select>
   );
-}
+};

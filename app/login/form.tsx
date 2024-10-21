@@ -1,5 +1,6 @@
 "use client";
 
+import GoMainPageButton from "./components/go-main-page-button";
 import { useFormState } from "react-dom";
 import { Input } from "@nextui-org/input";
 import { useRouter } from "next/navigation";
@@ -24,25 +25,37 @@ export default function LoginForm() {
     if (state.success) {
       toast.success(state.message);
       router.push("/home");
+    } else if (state.message) {
+      toast.error(state.message);
     }
 
-    const priorityFields = ["email", "password"];
-    const firstPriorityError = priorityFields.find(
-      (field) => state.errors[field]
-    );
+    if (state.errors && typeof state.errors === "object") {
+      const priorityFields = ["email", "password"];
+      const firstPriorityError = priorityFields.find(
+        (field) => state.errors[field]
+      );
 
-    if (firstPriorityError) {
-      toast.error(state.errors[firstPriorityError]);
-    } else {
-      const firstError = Object.values(state.errors).find((error) => error);
-      if (firstError) {
-        toast.error(firstError as ReactNode);
+      if (firstPriorityError) {
+        toast.error(state.errors[firstPriorityError]);
+      } else {
+        const firstError = Object.values(state.errors).find((error) => error);
+        if (firstError) {
+          toast.error(firstError as ReactNode);
+        }
       }
     }
   }, [state, router]);
 
   return (
-    <div className="flex h-screen w-screen items-center justify-center">
+    <div className="relative flex h-screen w-screen items-center justify-center">
+      <motion.div
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.3 }}
+        className="absolute top-4 left-4 z-10"
+      >
+        <GoMainPageButton />
+      </motion.div>
       <Toaster
         duration={5000}
         richColors
