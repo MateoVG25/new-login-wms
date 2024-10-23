@@ -1,7 +1,7 @@
 "use client";
 
-import { useFormState } from "react-dom";
 import { useEffect, ReactNode } from "react";
+import { useFormState } from "react-dom";
 import { motion } from "framer-motion";
 
 // components
@@ -119,14 +119,14 @@ export default function SignupForm() {
                   <PhoneInputComponent />
                   <BirthdateInputs />
                 </div>
-                <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-                  <GenderSelect />
-                  <RolSelect />
-                </div>
                 <IdentificationInputs />
                 <div className="grid grid-cols-2 gap-2">
                   <SelectOperationCenter />
                   <SelectOperationPoint />
+                </div>
+                <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+                  <GenderSelect />
+                  <RolSelect />
                 </div>
                 <RegisterButton />
               </div>

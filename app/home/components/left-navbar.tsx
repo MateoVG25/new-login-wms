@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { AdminPanel } from "./admin-panel";
 
 interface UserRole {
   RolId: number;
@@ -16,7 +17,7 @@ export const LeftNavbar = () => {
       try {
         const response = await fetch("/api/auth/user/profile");
         if (!response.ok) {
-          throw new Error("Failed to fetch user profile");
+          throw new Error("Fallo al obtener el perfil del usuario");
         }
         const userData = await response.json();
         setUserRole({ RolId: userData.RolId });
@@ -39,16 +40,19 @@ export const LeftNavbar = () => {
     return <div>Error: {error}</div>;
   }
 
+  if (userRole === null) {
+    return <div>No se pudo obtener el rol del usuario</div>;
+  }
+
   const renderComponents = () => {
     switch (userRole?.RolId) {
       case 1:
         return (
           <>
-            <div>Admin Component 1</div>
+            <AdminPanel />
             <div>Admin Component 2</div>
           </>
         );
-
       case 2:
         return (
           <>
@@ -59,8 +63,8 @@ export const LeftNavbar = () => {
       case 3:
         return (
           <>
-            <div>User Component 1</div>
-            <div>User Component 2</div>
+            <div>Operativo Component 1</div>
+            <div>Operativo Component 2</div>
           </>
         );
       case 4:

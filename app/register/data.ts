@@ -24,9 +24,3 @@ export const months = [
   { key: "11", label: "Noviembre" },
   { key: "12", label: "Diciembre" },
 ];
-
-export const roles = [
-  { value: 2, label: "Supervisor" },
-  { value: 3, label: "Operativo" },
-  { value: 4, label: "Consultor" },
-];

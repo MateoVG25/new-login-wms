@@ -49,7 +49,7 @@ export async function GET() {
 
     return NextResponse.json(result.recordset[0]);
   } catch (error) {
-    console.error("Error obteniendo perfil de usuario:", error);
+    console.error("Error obteniendo el perfil de usuario:", error);
     return NextResponse.json(
       {
         error: "Error obteniendo perfil de usuario",

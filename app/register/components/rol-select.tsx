@@ -36,10 +36,9 @@ export const RolSelect = () => {
 
         const data: ApiResponse = await response.json();
 
-        const filteredRoles = data.roles.filter(
-          (role) => role.RolName !== "Administrador"
-        );
-        setRoles(filteredRoles);
+        const filteredData = data.roles.filter((role) => role.RolId !== 1);
+
+        setRoles(filteredData);
       } catch (error) {
         setError(error instanceof Error ? error.message : "Error desconocido");
       } finally {
