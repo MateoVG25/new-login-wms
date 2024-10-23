@@ -1,7 +1,7 @@
 "use client";
 
 import { Input } from "@nextui-org/input";
-import { IconUser } from "@/lib/icons";
+import { UserIcon } from "lucide-react";
 
 export const NameLastnameInput = () => {
   return (
@@ -14,7 +14,7 @@ export const NameLastnameInput = () => {
           label="Nombre"
           labelPlacement="outside"
           type="text"
-          endContent={<IconUser />}
+          startContent={<UserIcon />}
           minLength={2}
         />
       </div>
@@ -26,7 +26,7 @@ export const NameLastnameInput = () => {
           label="Apellido"
           labelPlacement="outside"
           type="text"
-          endContent={<IconUser />}
+          startContent={<UserIcon />}
         />
       </div>
     </div>

@@ -16,7 +16,9 @@ export async function getUserProfile() {
     return data;
   } catch (error) {
     return {
-      error: (error as Error).message || "Error al obtener la información del usuario",
+      error:
+        (error as Error).message ||
+        "Error al obtener la información del usuario",
     };
   }
 }

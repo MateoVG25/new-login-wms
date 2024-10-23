@@ -16,7 +16,7 @@ export async function signup(prevState: SignUpState, formData: FormData) {
   if (!validation.success) {
     return {
       errors: validation.error.flatten().fieldErrors,
-      message: "Por favor, corrija los errores en el formulario",
+      // message: "Por favor, corrija los errores en el formulario",
     };
   }
 

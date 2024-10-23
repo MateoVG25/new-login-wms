@@ -21,6 +21,7 @@ import { SelectOperationCenter } from "./components/select-operation-center";
 import { RegisterButton } from "./components/register-button";
 
 import { signup } from "./actions";
+import { RolSelect } from "./components/rol-select";
 
 const initialState = {
   errors: {},
@@ -72,12 +73,7 @@ export default function SignupForm() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br">
-      <Toaster
-        duration={3000}
-        richColors
-        position="top-center"
-        expand={false}
-      />
+      <Toaster duration={5000} richColors position="top-center" expand={true} />
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -123,7 +119,10 @@ export default function SignupForm() {
                   <PhoneInputComponent />
                   <BirthdateInputs />
                 </div>
-                <GenderSelect />
+                <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+                  <GenderSelect />
+                  <RolSelect />
+                </div>
                 <IdentificationInputs />
                 <div className="grid grid-cols-2 gap-2">
                   <SelectOperationCenter />

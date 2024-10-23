@@ -1,7 +1,8 @@
 "use client";
 
 import { Input } from "@nextui-org/input";
-import { IconEmailOutline } from "@/lib/icons";
+import { MailIcon } from "lucide-react";
+import { KeyRoundIcon } from "lucide-react";
 
 export const AccountInfoInputs = () => {
   return (
@@ -14,7 +15,7 @@ export const AccountInfoInputs = () => {
           label="Email"
           labelPlacement="outside"
           type="email"
-          endContent={<IconEmailOutline />}
+          startContent={<MailIcon />}
         />
       </div>
       <div>
@@ -25,6 +26,7 @@ export const AccountInfoInputs = () => {
           label="Contraseña"
           labelPlacement="outside"
           placeholder="********"
+          startContent={<KeyRoundIcon />}
         />
       </div>
     </div>

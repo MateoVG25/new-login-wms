@@ -32,7 +32,7 @@ export async function POST(request: Request) {
     }
 
     const userResult = await db.request().input("email", email).query(`
-      SELECT UsuarioId, password, UsuarioGUID FROM ${process.env.USER_TABLE} WHERE UsuarioUser = @email
+      SELECT UsuarioId, password, UsuarioGUID, RolId FROM ${process.env.USER_TABLE} WHERE UsuarioUser = @email
     `);
 
     if (userResult.recordset.length === 0) {
@@ -55,6 +55,11 @@ export async function POST(request: Request) {
 
     const UsuarioSesionGUID = uuidv4();
     const UserId = user.UsuarioId;
+
+    await db.request().input("UsuarioId", UserId).query(`
+      UPDATE ${process.env.USER_TABLE}
+      SET UsuarioActivo = 1 WHERE UsuarioId = @UsuarioId
+    `);
 
     const sessionResult = await db
       .request()
@@ -116,6 +121,7 @@ export async function POST(request: Request) {
       userId: user.UsuarioId,
       sessionId: UsuarioSesionId,
       sessionGuid: sessionGuidUpdated,
+      rolId: user.RolId,
     })
       .setProtectedHeader({ alg: "HS256", typ: "JWT" })
       .setIssuedAt()

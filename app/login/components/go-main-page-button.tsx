@@ -4,7 +4,7 @@ import React from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@nextui-org/button";
 import { ArrowLeft } from "lucide-react";
-const GoMainPageButton: React.FC = () => {
+export const GoMainPageButton: React.FC = () => {
   const router = useRouter();
   return (
     <div className="flex justify-start">
@@ -12,7 +12,7 @@ const GoMainPageButton: React.FC = () => {
         onClick={() => router.push("/")}
         isIconOnly
         size="lg"
-        variant="light"
+        variant="flat"
         className="text-black"
       >
         <ArrowLeft />
@@ -20,5 +20,3 @@ const GoMainPageButton: React.FC = () => {
     </div>
   );
 };
-
-export default GoMainPageButton;

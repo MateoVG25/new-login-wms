@@ -7,6 +7,7 @@ export async function POST() {
     const session = await verifySession();
 
     const SessionUserId = session?.userId;
+    const UserId = session?.userId;
 
     if (SessionUserId) {
       const db = await connectToDatabase();
@@ -17,8 +18,13 @@ export async function POST() {
 
       await db.request().input("UsuarioSesionUsuarioId", SessionUserId).query(`
           UPDATE ${process.env.SESSION_TABLE}
-          SET UsuarioSesionGUID = NULL WHERE UsuarioSesionUsuarioId = @UsuarioSesionUsuarioId
+          SET UsuarioSesionGUID = NULL  WHERE UsuarioSesionUsuarioId = @UsuarioSesionUsuarioId
         `);
+
+      await db.request().input("UsuarioId", UserId).query(`
+        UPDATE ${process.env.USER_TABLE}
+        SET UsuarioActivo = 0 WHERE UsuarioId = @UsuarioId
+      `);
 
       const LastActivityAt = new Date();
 

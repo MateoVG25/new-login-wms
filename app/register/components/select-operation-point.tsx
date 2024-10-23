@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Select, SelectItem } from "@nextui-org/select";
+import { MapPinned } from "lucide-react";
 
 interface OperationPoint {
   PuntoOperacionId: number;
@@ -75,6 +76,7 @@ export const SelectOperationPoint = () => {
       label="Punto de operación"
       labelPlacement="outside"
       aria-label="Punto de operación"
+      startContent={<MapPinned />}
     >
       {operationPoint.map((point) => (
         <SelectItem key={point.PuntoOperacionId} value={point.PuntoOperacionId}>

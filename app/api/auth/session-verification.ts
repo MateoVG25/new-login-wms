@@ -6,12 +6,14 @@ interface SessionPayload {
   userId: number;
   sessionId: number;
   sessionGuid: string;
+  rolId: number;
 }
 
 interface SessionInfo {
   userId: number;
   sessionId: number;
   isValid: boolean;
+  rolId: number;
 }
 
 export async function verifySession(): Promise<SessionInfo | null> {
@@ -28,7 +30,12 @@ export async function verifySession(): Promise<SessionInfo | null> {
       payload: SessionPayload;
     };
 
-    if (!payload.userId || !payload.sessionId || !payload.sessionGuid) {
+    if (
+      !payload.userId ||
+      !payload.sessionId ||
+      !payload.sessionGuid ||
+      !payload.rolId
+    ) {
       return null;
     }
 
@@ -42,25 +49,25 @@ export async function verifySession(): Promise<SessionInfo | null> {
       .request()
       .input("UsuarioSesionUsuarioId", payload.userId)
       .input("sessionId", payload.sessionId)
-      .input("sessionGuid", payload.sessionGuid).query(`
-        SELECT UsuarioSesionId, UsuarioSesionUsuarioId, UsuarioSesionGUID
+      .input("sessionGuid", payload.sessionGuid)
+      .input("rolId", payload.rolId).query(`
+        SELECT UsuarioSesionId, UsuarioSesionUsuarioId, UsuarioSesionGUID, RolId
         FROM ${process.env.SESSION_TABLE}
         WHERE UsuarioSesionUsuarioId = @UsuarioSesionUsuarioId 
         AND UsuarioSesionId = @sessionId 
-        AND UsuarioSesionGUID = @sessionGuid;
+        AND UsuarioSesionGUID = @sessionGuid
+        AND RolId = @rolId
       `);
 
     if (result.recordset.length === 0) {
-      return {
-        userId: payload.userId,
-        sessionId: payload.sessionId,
-        isValid: false,
-      };
+      return null;
     }
+
     return {
       userId: payload.userId,
       sessionId: payload.sessionId,
       isValid: true,
+      rolId: payload.rolId,
     };
   } catch (error) {
     console.error("Error verificando sesión:", error);

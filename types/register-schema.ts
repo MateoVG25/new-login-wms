@@ -13,7 +13,7 @@ export const RegisterFormSchema = z.object({
     .trim(),
   email: z
     .string()
-    .email({ message: "Por favor ingrese un correo electrónico válido." })
+    .email({ message: "Por favor ingrese un correo electrónico válido. " })
     .min(6, { message: "El campo de correo debe tener al menos 6 caracteres." })
     .max(100, {
       message: "El campo de correo no debe tener más de 100 caracteres.",
@@ -50,6 +50,7 @@ export const RegisterFormSchema = z.object({
   month: z.string().min(1, { message: "Selecciona un mes" }).max(12),
   year: z.string().min(1, { message: "Selecciona un año" }).trim(),
   gender: z.string().min(1, { message: "Selecciona un genero" }).trim(),
+  rol: z.string().min(1, { message: "Selecciona un rol" }),
   userIdentityType: z.string().min(1, {
     message: "Selecciona un tipo de identificación",
   }),

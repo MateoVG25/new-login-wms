@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Select, SelectItem } from "@nextui-org/select";
+import { MapPinHouse } from "lucide-react";
 
 interface OperationCenter {
   CentroOperacionId: number;
@@ -75,6 +76,7 @@ export const SelectOperationCenter = () => {
       label="Centro de operación"
       labelPlacement="outside"
       aria-label="Centro de operación"
+      startContent={<MapPinHouse />}
     >
       {operationCenter.map((center) => (
         <SelectItem

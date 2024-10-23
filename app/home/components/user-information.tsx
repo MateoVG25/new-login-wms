@@ -32,7 +32,6 @@ export default function UserInformation() {
 
         const data = await response.json();
 
-        // Ensure data is an array
         const userDataArray = Array.isArray(data) ? data : [data];
 
         setUserInformation(userDataArray);

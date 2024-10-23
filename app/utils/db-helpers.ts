@@ -15,6 +15,7 @@ interface UserData {
   userIdentity: string;
   operationCenter: number;
   operationPoint: number;
+  rol: string;
 }
 
 interface UserResult {
@@ -43,17 +44,18 @@ export async function insertUser(
     .input("UsuarioTerminal", "N")
     .input("UsuarioUltPO", 0)
     .input("UsuarioUser", userData.email)
-    .input("UsuarioActivo", 1)
+    .input("UsuarioActivo", 0)
     .input("IMPImpresoraExternaId", null)
     .input("password", hashedPassword)
     .input("Gender", userData.gender)
+    .input("RolId", userData.rol)
     .input("IdentificationType", userData.userIdentityType)
     .input("Phone", userData.phone)
     .input("BirthDate", `${userData.day}-${userData.month}-${userData.year}`)
     .query(`
-      INSERT INTO ${process.env.USER_TABLE} (UsuarioNombre, UsuarioIdentificacion, UsuarioApellido, UsuarioGUID, UsuarioTerminal, UsuarioUltPO, UsuarioUser, UsuarioActivo, IMPImpresoraExternaId, password, Gender, IdentificationType, Phone, BirthDate)
+      INSERT INTO ${process.env.USER_TABLE} (UsuarioNombre, UsuarioIdentificacion, UsuarioApellido, UsuarioGUID, UsuarioTerminal, UsuarioUltPO, UsuarioUser, UsuarioActivo, IMPImpresoraExternaId, password, Gender, IdentificationType, Phone, BirthDate, RolId)
       OUTPUT INSERTED.UsuarioId, INSERTED.UsuarioUser, INSERTED.UsuarioGUID
-      VALUES (@UsuarioNombre, @UsuarioIdentificacion, @UsuarioApellido, @UsuarioGUID, @UsuarioTerminal, @UsuarioUltPO, @UsuarioUser, @UsuarioActivo, @IMPImpresoraExternaId, @password, @Gender, @IdentificationType, @Phone, @BirthDate)
+      VALUES (@UsuarioNombre, @UsuarioIdentificacion, @UsuarioApellido, @UsuarioGUID, @UsuarioTerminal, @UsuarioUltPO, @UsuarioUser, @UsuarioActivo, @IMPImpresoraExternaId, @password, @Gender, @IdentificationType, @Phone, @BirthDate, @RolId)
     `);
 
   return userResult.recordset[0];
@@ -80,11 +82,14 @@ export async function insertSession(
     .input("UsuarioSesionCentroOperacionId", userData.operationCenter)
     .input("UsuarioSesionPuntoOperacionId", userData.operationPoint)
     .input("UsuarioSesionGUID", UsuarioSesionGUID)
-    .input("UsuarioSesionIP", UsuarioSesionIP).query(`
+    .input("UsuarioSesionIP", UsuarioSesionIP)
+    .input("RolId", userData.rol).query(`
       INSERT INTO ${process.env.SESSION_TABLE} (UsuarioSesionUsuarioId,
       UsuarioSesionUser, UsuarioSesionOrdenanteId, UsuarioSesionTitularId,
-      UsuarioSesionCustodioId, UsuarioSesionCentroOperacionId, UsuarioSesionPuntoOperacionId, UsuarioSesionGUID, UsuarioSesionIP) OUTPUT INSERTED.UsuarioSesionId
-      VALUES (@UsuarioSesionUsuarioId, @UsuarioSesionUser, @UsuarioSesionOrdenanteId, @UsuarioSesionTitularId, @UsuarioSesionCustodioId, @UsuarioSesionCentroOperacionId, @UsuarioSesionPuntoOperacionId, @UsuarioSesionGUID, @UsuarioSesionIP)
+        UsuarioSesionCustodioId, UsuarioSesionCentroOperacionId,
+        UsuarioSesionPuntoOperacionId, UsuarioSesionGUID, UsuarioSesionIP,
+        RolId) OUTPUT INSERTED.UsuarioSesionId
+      VALUES (@UsuarioSesionUsuarioId, @UsuarioSesionUser, @UsuarioSesionOrdenanteId, @UsuarioSesionTitularId, @UsuarioSesionCustodioId, @UsuarioSesionCentroOperacionId, @UsuarioSesionPuntoOperacionId, @UsuarioSesionGUID, @UsuarioSesionIP, @RolId)
     `);
 
   return sessionResult.recordset[0];

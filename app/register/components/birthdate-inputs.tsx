@@ -3,6 +3,7 @@
 import { Select, SelectItem } from "@nextui-org/select";
 import { useMemo } from "react";
 import { months } from "@/app/register/data";
+import { Label } from "@/components/ui/label";
 
 export const BirthdateInputs = () => {
   const days = useMemo(() => Array.from({ length: 31 }, (_, i) => i + 1), []);
@@ -13,8 +14,8 @@ export const BirthdateInputs = () => {
 
   return (
     <div>
-      <label>Fecha de nacimiento</label>
-      <div className="grid grid-cols-3 gap-4">
+      <Label htmlFor="birthdate">Fecha de nacimiento</Label>
+      <div className="grid grid-cols-3 gap-4" id="birthdate">
         <Select id="day" name="day" placeholder="Día" aria-label="day">
           {days.map((d) => (
             <SelectItem key={d} value={d.toString()} textValue={d.toString()}>

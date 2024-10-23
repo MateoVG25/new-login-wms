@@ -12,9 +12,9 @@ export async function GET() {
     if (!session?.isValid) {
       return NextResponse.json(
         {
-          error: "Sesión no válida",
+          error: "Sesión no válida o no existe",
         },
-        { status: 401 }
+        { status: 404 }
       );
     }
 

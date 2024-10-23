@@ -39,7 +39,7 @@ export default function LandingPage() {
             <span className="text-2xl font-bold">Tecnocedi</span>
           </div>
           <nav>
-            {/* <ul className="flex space-x-4">
+            <ul className="flex space-x-4">
               <li>
                 <Link
                   href="#features"
@@ -48,23 +48,7 @@ export default function LandingPage() {
                   Features
                 </Link>
               </li>
-              <li>
-                <Link
-                  href="#about"
-                  className="hover:text-gray-300 transition-colors"
-                >
-                  About
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="#contact"
-                  className="hover:text-gray-300 transition-colors"
-                >
-                  Contact
-                </Link>
-              </li>
-            </ul> */}
+            </ul>
           </nav>
         </header>
 

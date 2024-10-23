@@ -1,6 +1,6 @@
 "use client";
 
-import GoMainPageButton from "./components/go-main-page-button";
+import { GoMainPageButton } from "./components/go-main-page-button";
 import { useFormState } from "react-dom";
 import { Input } from "@nextui-org/input";
 import { useRouter } from "next/navigation";
@@ -66,7 +66,7 @@ export default function LoginForm() {
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5 }}
-        className="bg-white bg-opacity-10 backdrop-filter backdrop-blur-xl p-8 rounded-2xl shadow-2xl w-full max-w-md border  border-opacity-15 mx-2"
+        className="bg-white bg-opacity-10 backdrop-filter backdrop-blur-xl p-8 rounded-2xl shadow-2xl w-full max-w-md border  border-opacity-15 m-4"
       >
         <motion.div
           initial={{ y: -50, opacity: 0 }}

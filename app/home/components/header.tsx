@@ -2,7 +2,7 @@
 
 // components
 import LogoutButton from "./logout-button";
-
+import { LeftNavbar } from "./left-navbar";
 import {
   Sheet,
   SheetContent,
@@ -29,12 +29,14 @@ export function Header() {
           </SheetTrigger>
           <SheetContent side={"left"} className="flex flex-col h-full">
             <SheetHeader>
-              <SheetTitle>Integraciones o terminales</SheetTitle>
+              <SheetTitle>Menú de integraciones</SheetTitle>
               <SheetDescription>
-                Aqui van las integracion o terminales dividas por secciones
+                Aqui vas a poder ver tus modulos disponibles
               </SheetDescription>
             </SheetHeader>
-            <div className="flex-grow"></div> {/* Espaciador */}
+            <div className="flex-grow">
+              <LeftNavbar />
+            </div>
             <hr />
             <SheetFooter className="mt-auto flex justify-center">
               <LogoutButton />

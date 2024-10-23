@@ -63,14 +63,13 @@ export async function POST(request: Request) {
         hashedPassword
       );
 
-      // Fetch additional data
+      // fetch ordenante, custodio and titular ids
       const [ordenanteId, custodioId, titularId] = await Promise.all([
         getSenderId(),
         getCustodyId(),
         getTitularId(),
       ]);
 
-      // Insert session
       const sessionResult = await insertSession(
         transaction,
         userResult,
@@ -80,15 +79,17 @@ export async function POST(request: Request) {
         userData
       );
 
-      // Insert session info
       await insertSessionInfo(transaction, sessionResult, userResult);
 
       await transaction.commit();
 
-      return NextResponse.json({
-        success: true,
-        message: "Usuario registrado exitosamente",
-      });
+      return NextResponse.json(
+        {
+          success: true,
+          message: "Usuario registrado exitosamente",
+        },
+        { status: 200 }
+      );
     } catch (error) {
       await transaction.rollback();
       throw error;
